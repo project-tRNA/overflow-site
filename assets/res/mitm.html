@@ -121,7 +121,9 @@ function onMessage (event) {
   data.pathname = data.pathname.replace(/^\/+/g, '')
 
   // remove protocol
-  let org = origin.replace(/(^\w+:|^)\/\//, '')
+  //let org = origin.replace(/(^\w+:|^)\/\//, '')
+  let org = ""
+  if (scope.endsWith("/")) scope = scope.substring(0, scope.length - 1)
 
   // set the absolute pathname to the download url.
   data.url = new URL(`${scope + org}/${data.pathname}`).toString()
