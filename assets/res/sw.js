@@ -20,7 +20,7 @@ self.onmessage = event => {
   }
 
   const data = event.data
-  const downloadUrl = data.url || self.registration.scope + Math.random() + '/' + (typeof data === 'string' ? data : data.filename)
+  const downloadUrl = self.registration.scope + Math.random() + '/' + (typeof data === 'string' ? data : data.filename)
   const port = event.ports[0]
   const metadata = new Array(3) // [stream, data, port]
 
