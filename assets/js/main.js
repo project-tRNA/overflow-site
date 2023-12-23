@@ -199,6 +199,8 @@ streamSaver.mitm = "https://mirai.mrxiaom.top/assets/res/mitm.html?version=2.0.0
 
 $refresh.onclick = async () => {
 	$refresh.setAttribute("disabled", undefined)
+	$start.setAttribute("disabled", undefined)
+	$overflow.setAttribute("disabled", undefined)
 	var miraiVersion = $mirai.options[$mirai.selectedIndex].value
 	var versionList = []
 	var githubCommits = []
@@ -271,7 +273,9 @@ $overflow.onchange = () => {
 	$checkOnGithub.href = "https://github.com/MrXiaoM/Overflow/commit/" + hash
 }
 $start.onclick = async () => {
+	$refresh.setAttribute("disabled", undefined)
 	$start.setAttribute("disabled", undefined)
+	$overflow.setAttribute("disabled", undefined)
 	$start.innerHTML = "正在获取快照版本"
 	try {
 		var mavenRepo = $repo.options[$repo.selectedIndex].value // "https://mirrors.huaweicloud.com/repository/maven"
@@ -308,10 +312,12 @@ $start.onclick = async () => {
 		if (overflowVersion == overflowSnapshotVersion) {
 			window.alert("无法获取Overflow快照版本号")
 			$start.removeAttribute("disabled")
+			$refresh.removeAttribute("disabled")
+			$overflow.removeAttribute("disabled")
 			$start.innerHTML = "下载"
 			return
 		}
-		$start.innerHTML = "正在"
+		$start.innerHTML = "正在下载"
 
 		const fileStream = streamSaver.createWriteStream('overflow-' + overflowVersion + '.zip')
 		const readableZipStream = new ZIP({
@@ -399,6 +405,8 @@ $start.onclick = async () => {
 			return readableZipStream.pipeTo(fileStream).then(() => {
 				console.log('done writing')
 				$start.removeAttribute("disabled")
+				$refresh.removeAttribute("disabled")
+				$overflow.removeAttribute("disabled")
 				$start.innerHTML = "下载"
 			})
 		}
@@ -413,6 +421,8 @@ $start.onclick = async () => {
 	} catch (e) {
 		console.log(e)
 		$start.removeAttribute("disabled")
+		$refresh.removeAttribute("disabled")
+		$overflow.removeAttribute("disabled")
 		$start.innerHTML = "下载"
 	}
 }
