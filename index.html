@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html lang="zh">
+	<head>
+		<title>Overflow —— 猫猫式 mirai 实现于 Onebot 11</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.15.4/css/all.min.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<div class="background"></div>
+		<!-- Sidebar -->
+			<section id="sidebar">
+				<div class="inner">
+					<nav>
+						<ul>
+							<li><a href="#intro">欢迎</a></li>
+							<li><a href="#what-is-this">这是什么</a></li>
+							<li><a href="#get-started">快速开始</a></li>
+						</ul>
+					</nav>
+				</div>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Intro -->
+					<section id="intro" class="wrapper style1 fullscreen fade-up">
+						<div class="inner">
+							<h1>Overflow 溢出核心</h1>
+							<p class="bottom-07em">猫猫式 mirai 实现于 <a href="https://11.onebot.dev">Onebot 11</a>。<br />
+							让 mirai 框架加入 Onebot 大家庭!</p>
+							<ul class="actions">
+								<li><a href="#what-is-this" class="button scrolly">了解更多</a></li>
+							</ul>
+						</div>
+					</section>
+
+
+				<!-- What is this -->
+					<section id="what-is-this" class="wrapper style3 fade-up">
+						<div class="inner">
+							<h1>这是什么</h1>
+							<p>Overflow 是 <a href="https://github.com/mamoe/mirai/tree/dev/mirai-core-api" target="_blank">mirai-core-api</a> 的实现，该项目因腾讯官方持续更新签名算法打击机器人社区而产生，产生目的是扩展 mirai 的可用范围，当实在没有人更新 mirai-core 的协议实现时，可使用本项目将 mirai 接口嫁接到 Onebot 实现上，以实现快速迁移，而无需修改原有业务代码。</p>
+							<div class="features">
+								<section>
+									<span class="icon solid major fa-code"></span>
+									<h2>Overflow 是什么</h2>
+									<p>它是 mirai 对于 Onebot 的<b>转接器、适配器</b>，桥接在 mirai 接口与 Onebot 实现中，使得用户可以在大部分标准 Onebot 实现上使用 mirai 插件 (或其它业务实现)。</p>
+								</section>
+								<section>
+									<span class="icon solid major fal fa-times"></span>
+									<h2>Overflow 不是什么</h2>
+									<p>它<b>不是即装即用</b>的协议实现，用户至少需要部署一个 Onebot 实现，使 Overflow 连接到该实现才可使用。本项目的开发参考了 <a href="https://11.onebot.dev" target="_blank">Onebot 11 规范</a>，没有对即时通信软件QQ进行过逆向分析。</p>
+								</section>
+								<section>
+									<span class="icon solid major fal fa-coins"></span>
+									<h2>这是免费的吗</h2>
+									<p>是的，你可以<b>免费使用</b> Overflow，同时，它开放了源代码，任何人都可以对其贡献代码。如需使用其源代码，请遵守 <a>AGPL-v3</a> 协议。</p>
+								</section>
+								<section>
+									<span class="icon solid major fal fa-user-edit"></span>
+									<h2>它还在更新吗</h2>
+									<p>是的，本项目的主要维护者为 <a href="https://www.mrxiaom.top">MrXiaoM</a>。由于主要维护者的学业等原因，该项目更新频率将<b>不稳定</b>。</p>
+								</section>
+							</div>
+							<ul class="actions">
+								<li><a href="https://github.com/MrXiaoM/Overflow" class="button"><span class="solid fab fa-github"></span> 开源地址</a></li>
+							</ul>
+						</div>
+					</section>
+
+				<!-- Get started -->
+					<section id="get-started" class="wrapper style1 fade-up">
+						<div class="inner">
+							<h1>快速开始</h1>
+							<p>在这里打包下载 Overflow + mirai-console 整合包，并进行部署。</p>
+							<div class="split style1">
+								<section>
+										<h2>Step 1. 下载</h2>
+										<div class="fields">
+											<div class="field half">
+												<label for="repo">下载源</label>
+												<select id="$repo" name="repo">
+													<option value="https://mirrors.huaweicloud.com/repository/maven">镜像 - 华为云</option>
+													<option value="https://maven.aliyun.com/repository/central">镜像 - 阿里云</option>
+													<option value="https://repo1.maven.org/maven2">官方 - Maven Central</option>
+												</select>
+											</div>
+											<div class="field half">
+												<label for="mirai">mirai 版本</label>
+												<select id="$mirai" name="mirai">
+													<option>2.16.0</option>
+												</select>
+											</div>
+											<div class="field">
+												<div class="row bottom-07em">
+													<label for="overflow" class="flex-bottom right-auto">overflow 版本</label>
+													<button id="$refresh" class="button">刷新版本列表</button>
+												</div>
+												<select id="$overflow" name="overflow" disabled></select>
+											</div>
+										</div>
+										<ul class="actions">
+											<li><button id="$start" class="button" disabled>下载</button></li>
+											<li><a id="$checkOnGithub" class="button" href="https://github.com/MrXiaoM/Overflow" target="_blank">在 Github 查看</a></li>
+										</ul>
+										<p>下载后<b>解压</b>并<b>至少启动一遍</b>，以生成配置文件。</p>
+								</section>
+								<section>
+									<h2>Step 2. 部署</h2>
+									<p>打开配置文件 <code>overflow.json</code> 以备用。</p>
+									<p>从下方选择<b>任意一个</b> Onebot 实现并部署，详细教程请见链接内相关文档。</p>
+									<ul>
+										<li><a href="https://github.com/whitechi73/OpenShamrock" target="_blank">OpenShamrock</a> <code>Xposed/LSPatch hook</code></li>
+										<li><a href="https://github.com/Hoshinonyaruko/Gensokyo" target="_blank">Gensokyo</a> <code>QQ 官方机器人</code></li>
+									</ul>
+									<p>Onebot 实现部署完成后，取得其 <b>正向 WebSocket 地址</b> 或 <b>反向 WebSocket 地址</b>，任选其一填入配置文件中，<b>再次启动</b>即可。</p>
+									<ul>
+										<li><code>ws_host</code> 正向 WebSocket 地址。</li>
+										<li><code>reversed_ws_port</code> 反向 WebSocket 端口。</li>
+										<li><code>token</code> 鉴权令牌，留空即不验证令牌。</li>
+									</ul>
+								</section>
+							</div>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper style1-alt">
+				<div class="inner">
+					<span><b>本程序及其源代码仅供学习参考，请勿用于非法用途。</b></span>
+					<ul class="menu">
+						<li>&copy; <a href="https://www.mrxiaom.top/" target="_blank">MrXiaoM</a> and <a href="https://github.com/MrXiaoM/Overflow/graphs/contributors" target="_blank">Contributors</a>. 保留所有权利.</li><li>该网页由 <a href="http://html5up.net"  target="_blank">HTML5 UP</a> 设计</li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+			<script src="https://cdn.bootcdn.net/ajax/libs/jquery.scrollex/0.2.1/jquery.scrollex.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/web-streams-polyfill@2.0.2/dist/ponyfill.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/streamsaver@2.0.3/StreamSaver.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/gh/eligrey/Blob.js/Blob.js"></script>
+			<script src="assets/js/zip-stream.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
