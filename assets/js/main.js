@@ -311,7 +311,7 @@ $start.onclick = async () => {
 		}
 		$start.innerHTML = "正在"
 
-		const fileStream = streamSaver.createWriteStream('overflow.zip')
+		const fileStream = streamSaver.createWriteStream('overflow-' + overflowVersion + '.zip')
 		const readableZipStream = new ZIP({
 			start(ctrl) { },
 			async pull(ctrl) {
