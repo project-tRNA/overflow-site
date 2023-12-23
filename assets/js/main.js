@@ -236,7 +236,7 @@ $refresh.onclick = async () => {
 					githubCommits.push({sha: sha, shortHash: shortHash, message: message, time: time})
 				}
 			}
-			console.log(githubCommits)
+			//console.log(githubCommits)
 		})
 	const dateToString = function(date) {
 		var month = date.getMonth() + 1
@@ -269,133 +269,148 @@ $overflow.onchange = () => {
 	$checkOnGithub.href = "https://github.com/MrXiaoM/Overflow/commit/" + hash
 }
 $start.onclick = async () => {
-	var mavenRepo = $repo.options[$repo.selectedIndex].value // "https://mirrors.huaweicloud.com/repository/maven"
-	if (mavenRepo.endsWith("/")) mavenRepo = mavenRepo.substring(0, mavenRepo.length - 1)
-	var miraiVersion = $mirai.options[$mirai.selectedIndex].value
-	var overflowVersion = $overflow.options[$overflow.selectedIndex].value
-	var overflowSnapshotVersion = overflowVersion
+	$start.setAttribute("disabled", undefined)
+	$start.innerHTML = "正在获取快照版本"
+	try {
+		var mavenRepo = $repo.options[$repo.selectedIndex].value // "https://mirrors.huaweicloud.com/repository/maven"
+		if (mavenRepo.endsWith("/")) mavenRepo = mavenRepo.substring(0, mavenRepo.length - 1)
+		var miraiVersion = $mirai.options[$mirai.selectedIndex].value
+		var overflowVersion = $overflow.options[$overflow.selectedIndex].value
+		var overflowSnapshotVersion = overflowVersion
 
-	console.log(mavenRepo)
-	console.log(miraiVersion)
+		//console.log(mavenRepo)
+		//console.log(miraiVersion)
 
-	await fetch("https://mirai.doomteam.fun/version/2.16.0-1bf69de-SNAPSHOT/maven-metadata.xml")
-		.then(resp => {
-			if (resp.status == 200) {
-				return resp.text()
-			}
-			return null
-		}).then(text => {
-			var xmlDoc = new DOMParser().parseFromString(text, "text/xml")
-			var versions = xmlDoc.getElementsByTagName("snapshotVersion")
-
-			for (var i = 0; i < versions.length; i++) {
-				var item = versions.item(i);
-				var extension = getElementValueOr(item, "extension", "")
-				var classifier = getElementValueOr(item, "classifier", "")
-				var value = getElementValueOr(item, "value", "")
-				if (extension == 'jar' && classifier == "all") {
-					overflowSnapshotVersion = value
-					break
+		await fetch("https://mirai.doomteam.fun/version/2.16.0-1bf69de-SNAPSHOT/maven-metadata.xml")
+			.then(resp => {
+				if (resp.status == 200) {
+					return resp.text()
 				}
+				return null
+			}).then(text => {
+				var xmlDoc = new DOMParser().parseFromString(text, "text/xml")
+				var versions = xmlDoc.getElementsByTagName("snapshotVersion")
+
+				for (var i = 0; i < versions.length; i++) {
+					var item = versions.item(i);
+					var extension = getElementValueOr(item, "extension", "")
+					var classifier = getElementValueOr(item, "classifier", "")
+					var value = getElementValueOr(item, "value", "")
+					if (extension == 'jar' && classifier == "all") {
+						overflowSnapshotVersion = value
+						break
+					}
+				}
+			})
+
+		if (overflowVersion == overflowSnapshotVersion) {
+			window.alert("无法获取Overflow快照版本号")
+			$start.removeAttribute("disabled")
+			$start.innerHTML = "下载"
+			return
+		}
+		$start.innerHTML = "正在"
+
+		const fileStream = streamSaver.createWriteStream('overflow.zip')
+		const readableZipStream = new ZIP({
+			start(ctrl) { },
+			async pull(ctrl) {
+				const downloadRemote = el => {
+					let name = el.name
+					return new Promise(resolve => {
+						//console.log(el.url)
+						fetch(el.url).then(resp => {
+							if (resp.status == 200) {
+								return () => resp.body
+							}
+							return null
+						}).then(stream => {
+							resolve({ name: name, stream: stream })
+						})
+					})
+				}
+				const plainFile = el => {
+					let name = el.name
+					return new Promise(resolve => {
+						resolve({
+							name: name, stream() {
+								return new ReadableStream({
+									start(ctrl) {
+										ctrl.enqueue(new TextEncoder().encode(el.content))
+										ctrl.close()
+									}
+								})
+							}
+						})
+					})
+				}
+				let arr = [], remotes = [
+					{ name: "libs/overflow-core-all-" + overflowVersion + "-all.jar", url: "https://mirai.doomteam.fun/version/" + overflowVersion + "/overflow-core-all-" + overflowSnapshotVersion + "-all.jar" },
+					{ name: "libs/mirai-console-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console/" + miraiVersion + "/mirai-console-" + miraiVersion + "-all.jar" },
+					{ name: "libs/mirai-console-terminal-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console-terminal/" + miraiVersion + "/mirai-console-terminal-" + miraiVersion + "-all.jar" }
+				], plains = [
+					{ name: "start.bat", content: "java -cp ./content/* net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader" },
+					{ name: "start.sh", content: "java -cp \"$CLASSPATH:./content/*\" net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader" }
+				]
+				//console.log(remotes)
+				//console.log(plains)
+				remotes.forEach(el => {
+					arr.push(downloadRemote(el))
+				})
+				plains.forEach(el => {
+					arr.push(plainFile(el))
+				})
+				//console.log(arr)
+				await Promise.all(arr).then(res => {
+					//console.log(res)
+					let nameMapList = []
+					res.forEach(item => {
+						let name = item.name
+						const stream = item.stream
+						let nameList = nameMapList.map(nameMap => nameMap.name)
+						if (nameList.indexOf(name) == -1) {
+							nameMapList.push({ name: name, cnt: 0 })
+						} else {
+							let nameItem = nameMapList.find(item => item.name == name)
+							nameItem.cnt += 1
+							//console.log(nameItem)
+							let fileName = name.substring(0, name.lastIndexOf('.'))
+							let prefix = name.substr(name.lastIndexOf('.'))
+							//console.log(name)
+							name = fileName + ("(" + nameItem.cnt + ")") + prefix
+							//console.log(name)
+						}
+						if (item.stream) {
+							let file = { name, stream }
+							//console.log(file)
+							ctrl.enqueue(file)
+						}
+					})
+				})
+
+				ctrl.close()
 			}
 		})
 
-	if (overflowVersion == overflowSnapshotVersion) {
-		window.alert("无法获取Overflow快照版本号")
-		return
-	}
-
-	const fileStream = streamSaver.createWriteStream('overflow.zip')
-	const readableZipStream = new ZIP({
-		start(ctrl) { },
-		async pull(ctrl) {
-			const downloadRemote = el => {
-				let name = el.name
-				return new Promise(resolve => {
-					console.log(el.url)
-					fetch(el.url).then(resp => {
-						if (resp.status == 200) {
-							return () => resp.body
-						}
-						return null
-					}).then(stream => {
-						resolve({ name: name, stream: stream })
-					})
-				})
-			}
-			const plainFile = el => {
-				let name = el.name
-				return new Promise(resolve => {
-					resolve({
-						name: name, stream() {
-							return new ReadableStream({
-								start(ctrl) {
-									ctrl.enqueue(new TextEncoder().encode(el.content))
-									ctrl.close()
-								}
-							})
-						}
-					})
-				})
-			}
-			let arr = [], remotes = [
-				{ name: "libs/overflow-core-all-" + overflowVersion + "-all.jar", url: "https://mirai.doomteam.fun/version/" + overflowVersion + "/overflow-core-all-" + overflowSnapshotVersion + "-all.jar"  },
-				{ name: "libs/mirai-console-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console/" + miraiVersion + "/mirai-console-" + miraiVersion + "-all.jar" },
-				{ name: "libs/mirai-console-terminal-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console-terminal/" + miraiVersion + "/mirai-console-terminal-" + miraiVersion + "-all.jar" }
-			], plains = [
-				{ name: "start.bat", content: "java -cp ./content/* net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader" },
-				{ name: "start.sh", content: "java -cp \"$CLASSPATH:./content/*\" net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader" }
-			]
-			console.log(remotes)
-			console.log(plains)
-			remotes.forEach(el => {
-				arr.push(downloadRemote(el))
+		// more optimized
+		if (window.WritableStream && readableZipStream.pipeTo) {
+			return readableZipStream.pipeTo(fileStream).then(() => {
+				console.log('done writing')
+				$start.removeAttribute("disabled")
+				$start.innerHTML = "下载"
 			})
-			plains.forEach(el => {
-				arr.push(plainFile(el))
-			})
-			console.log(arr)
-			await Promise.all(arr).then(res => {
-				console.log(res)
-				let nameMapList = []
-				res.forEach(item => {
-					let name = item.name
-					const stream = item.stream
-					let nameList = nameMapList.map(nameMap => nameMap.name)
-					if (nameList.indexOf(name) == -1) {
-						nameMapList.push({ name: name, cnt: 0 })
-					} else {
-						let nameItem = nameMapList.find(item => item.name == name)
-						nameItem.cnt += 1
-						console.log(nameItem)
-						let fileName = name.substring(0, name.lastIndexOf('.'))
-						let prefix = name.substr(name.lastIndexOf('.'))
-						console.log(name)
-						name = fileName + ("(" + nameItem.cnt + ")") + prefix
-						console.log(name)
-					}
-					if (item.stream) {
-						let file = { name, stream }
-						console.log(file)
-						ctrl.enqueue(file)
-					}
-				})
-			})
-
-			ctrl.close()
 		}
-	})
 
-	// more optimized
-	if (window.WritableStream && readableZipStream.pipeTo) {
-		return readableZipStream.pipeTo(fileStream).then(() => console.log('done writing'))
+		// less optimized
+		const writer = fileStream.getWriter()
+		const reader = readableZipStream.getReader()
+		const pump = () => reader.read()
+			.then(res => res.done ? writer.close() : writer.write(res.value).then(pump))
+
+		pump()
+	} catch (e) {
+		console.log(e)
+		$start.removeAttribute("disabled")
+		$start.innerHTML = "下载"
 	}
-
-	// less optimized
-	const writer = fileStream.getWriter()
-	const reader = readableZipStream.getReader()
-	const pump = () => reader.read()
-		.then(res => res.done ? writer.close() : writer.write(res.value).then(pump))
-
-	pump()
 }
