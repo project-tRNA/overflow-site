@@ -195,6 +195,8 @@ const getElementValueOr = function (el, name, def) {
 	return list[0].textContent
 }
 
+streamSaver.mitm = "https://mirai.mrxiaom.top/assets/res/mitm.html?version=2.0.0"
+
 $refresh.onclick = async () => {
 	$refresh.setAttribute("disabled", undefined)
 	var miraiVersion = $mirai.options[$mirai.selectedIndex].value
