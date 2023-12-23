@@ -124,9 +124,9 @@ function onMessage (event) {
   //let org = origin.replace(/(^\w+:|^)\/\//, '')
   
   // set the absolute pathname to the download url.
-  data.url = new URL(`${scope}/${data.pathname}`).toString()
+  data.url = new URL(`${scope}${data.pathname}`).toString()
 
-  if (!data.url.startsWith(`${scope}/`)) {
+  if (!data.url.startsWith(`${scope}`)) {
     throw new TypeError('[StreamSaver] bad `data.pathname`')
   }
 
