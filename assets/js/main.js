@@ -204,7 +204,7 @@ $refresh.onclick = async () => {
 	var miraiVersion = $mirai.options[$mirai.selectedIndex].value
 	var versionList = []
 	var githubCommits = []
-	await fetch("https://mirai.doomteam.fun/versions")
+	await fetch("https://mirai.doomteam.fun/versions", {cache: "no-store"})
 		.then(resp => {
 			if (resp.status == 200) {
 				return resp.text()
@@ -221,7 +221,7 @@ $refresh.onclick = async () => {
 				versionList.push(content)
 			}
 		})
-	await fetch("https://api.github.com/repos/MrXiaoM/Overflow/commits")
+	await fetch("https://api.github.com/repos/MrXiaoM/Overflow/commits", {cache: "no-store"})
 		.then(resp => {
 			if (resp.status == 200) {
 				return resp.json()
@@ -287,7 +287,7 @@ $start.onclick = async () => {
 		//console.log(mavenRepo)
 		//console.log(miraiVersion)
 
-		await fetch("https://mirai.doomteam.fun/version/2.16.0-1bf69de-SNAPSHOT/maven-metadata.xml")
+		await fetch("https://mirai.doomteam.fun/version/" + overflowVersion + "/maven-metadata.xml")
 			.then(resp => {
 				if (resp.status == 200) {
 					return resp.text()
