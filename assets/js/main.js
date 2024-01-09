@@ -358,7 +358,7 @@ $start.onclick = async () => {
 					{ name: "libs/mirai-console-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console/" + miraiVersion + "/mirai-console-" + miraiVersion + "-all.jar" },
 					{ name: "libs/mirai-console-terminal-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console-terminal/" + miraiVersion + "/mirai-console-terminal-" + miraiVersion + "-all.jar" }
 				], plains = [
-					{ name: "start.bat", content: "java -cp ./content/* net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader" },
+					{ name: "start.bat", content: "@echo off\njava -cp ./content/* net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader\npause" },
 					{ name: "start.sh", content: "java -cp \"$CLASSPATH:./content/*\" net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader" }
 				]
 				//console.log(remotes)
