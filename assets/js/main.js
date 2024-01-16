@@ -353,10 +353,10 @@ $start.onclick = async () => {
 					})
 				}
 				let arr = [], remotes = [
-					{ name: "libs/overflow-core-all-" + overflowVersion + "-all.jar", url: "https://mirai.doomteam.fun/version/" + overflowVersion + "/overflow-core-all-" + overflowSnapshotVersion + "-all.jar" },
-					{ name: "libs/bcprov-jdk15on-1.64.jar", url: mavenRepo + "/org/bouncycastle/bcprov-jdk15on/1.64/bcprov-jdk15on-1.64.jar" },
-					{ name: "libs/mirai-console-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console/" + miraiVersion + "/mirai-console-" + miraiVersion + "-all.jar" },
-					{ name: "libs/mirai-console-terminal-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console-terminal/" + miraiVersion + "/mirai-console-terminal-" + miraiVersion + "-all.jar" }
+					{ name: "content/overflow-core-all-" + overflowVersion + "-all.jar", url: "https://mirai.doomteam.fun/version/" + overflowVersion + "/overflow-core-all-" + overflowSnapshotVersion + "-all.jar" },
+					{ name: "content/bcprov-jdk15on-1.64.jar", url: mavenRepo + "/org/bouncycastle/bcprov-jdk15on/1.64/bcprov-jdk15on-1.64.jar" },
+					{ name: "content/mirai-console-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console/" + miraiVersion + "/mirai-console-" + miraiVersion + "-all.jar" },
+					{ name: "content/mirai-console-terminal-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console-terminal/" + miraiVersion + "/mirai-console-terminal-" + miraiVersion + "-all.jar" }
 				], plains = [
 					{ name: "start.bat", content: "@echo off\njava -cp ./content/* net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader\npause" },
 					{ name: "start.sh", content: "java -cp \"$CLASSPATH:./content/*\" net.mamoe.mirai.console.terminal.MiraiConsoleTerminalLoader" }
