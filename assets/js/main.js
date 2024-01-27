@@ -261,7 +261,7 @@ $refresh.onclick = async () => {
 		var version = miraiVersion + "-" + commit.shortHash + "-SNAPSHOT"
 		option.value = version
 		option.name = commit.sha
-		option.text = dateToString(commit.time) + " " + commit.shortHash + " - " + commit.message
+		option.text = dateToString(commit.time) + " " + commit.shortHash + " - " + commit.message.split('\n')[0]
 		$overflow.add(option, null)
 	}
 	$overflow.onchange()
