@@ -270,7 +270,9 @@ $refresh.onclick = async () => {
 }
 $overflow.onchange = () => {
 	var hash = $overflow.options[$overflow.selectedIndex].name
+	var overflowVersion = $overflow.options[$overflow.selectedIndex].value
 	$checkOnGithub.href = "https://github.com/MrXiaoM/Overflow/commit/" + hash
+	$codeDependencyGradle.innerHTML = "top.mrxiaom:overflow-core-api:" + overflowVersion
 }
 $start.onclick = async () => {
 	$refresh.setAttribute("disabled", undefined)
