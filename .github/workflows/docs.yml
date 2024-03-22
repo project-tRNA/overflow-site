@@ -1,0 +1,57 @@
+name: Deploy to Github Pages
+
+on:
+  schedule: # execute every day 12:00
+    - cron: "0 12 * * *"
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      
+      - name: Clone MrXiaoM/Overflow
+        run: git clone https://github.com/MrXiaoM/Overflow
+      
+      - name: Copy docs
+        run: |
+          mkdir -p ./docs/.git
+          mkdir -p ./docs/docs
+          cp -r ./Overflow/.git/. ./docs/.git
+          cp -r ./Overflow/docs/. ./docs/docs
+      
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - run: npm install
+
+      - name: Build
+        run: npm run docs:build
+
+      - name: Replace index.html
+        run: cp -f ./docs/.vuepress/public/index.html ./docs/.vuepress/dist
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: 'docs/.vuepress/dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
