@@ -22,16 +22,12 @@ export default defineUserConfig({
         sidebar: "structure",
         navbar: [
             {
-                text: "主站",
-                link: "/",
-            },
-            {
                 text: "用户手册",
-                link: "/docs",
+                link: "/docs/",
             },
             {
                 text: "开发文档",
-                link: "/docs/dev",
+                link: "/docs/dev/",
             },
             {
                 text: "部署教程",
@@ -40,7 +36,6 @@ export default defineUserConfig({
         ],
         print: false,
         pure: true,
-        navTitle: false,
         repo: "MrXiaoM/Overflow",
         docsDir: "",
         plugins: {
