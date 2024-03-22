@@ -1,9 +1,9 @@
 import { defineClientConfig } from 'vuepress/client'
 
 export default defineClientConfig({
-  enhance({ app, router, siteData }) {
+  enhance({ router }) {
     router.afterEach((to, from) => {
-        if (to.path == "/") {
+        if (to.path == '/' && from.path != '/') {
             router.go(0);
         }
     })
