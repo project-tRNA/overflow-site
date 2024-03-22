@@ -18,8 +18,13 @@ export default defineUserConfig({
     },
     theme: hopeTheme({
         favicon: "/assets/images/favicon-32x32.png",
+        logo: "/assets/images/favicon-32x32.png",
         sidebar: "structure",
         navbar: [
+            {
+                text: "主站",
+                link: "/",
+            },
             {
                 text: "用户手册",
                 link: "/docs",
@@ -35,17 +40,18 @@ export default defineUserConfig({
         ],
         print: false,
         pure: true,
+        navTitle: false,
         repo: "MrXiaoM/Overflow",
-        docsDir: "docs",
+        docsDir: "",
         plugins: {
-            activeHeaderLinks: true,
+            activeHeaderLinks: false,
             nprogress: true,
         },
         lastUpdated: true,
-        breadcrumb: true,
+        breadcrumb: false,
         pageInfo: false,
-        nextLinks: true,
-        prevLinks: true,
+        nextLink: true,
+        prevLink: true,
     }),
     plugins: [
     ],
