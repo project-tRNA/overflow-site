@@ -27,14 +27,16 @@ jobs:
         uses: actions/configure-pages@v3
       
       - name: Clone MrXiaoM/Overflow
-        run: git clone https://github.com/MrXiaoM/Overflow
+        run: |
+          git clone https://github.com/MrXiaoM/Overflow
+          git log -1 HEAD
       
       - name: Copy docs
         run: |
           mkdir -p ./docs/.git
           mkdir -p ./docs/docs
           cp -r ./Overflow/.git/. ./docs/.git
-          cp -r ./Overflow/docs/. ./docs/docs
+          cp -v -r ./Overflow/docs/. ./docs/docs
       
       - uses: actions/setup-node@v3
         with:
