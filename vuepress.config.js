@@ -23,7 +23,7 @@ export default defineUserConfig({
         navbar: [
             {
                 text: "用户手册",
-                link: "/docs/",
+                link: "/docs/UserManual",
             },
             {
                 text: "开发文档",
