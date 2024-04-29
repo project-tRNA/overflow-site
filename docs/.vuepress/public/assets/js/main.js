@@ -204,7 +204,7 @@ $refresh.onclick = async () => {
 	var miraiVersion = $mirai.options[$mirai.selectedIndex].value
 	var versionList = []
 	var githubCommits = []
-	await fetch("https://mirai.doomteam.fun/versions", {cache: "no-store"})
+	await fetch("https://mirai.mcio.dev/versions", {cache: "no-store"})
 		.then(resp => {
 			if (resp.status == 200) {
 				return resp.text()
@@ -289,7 +289,7 @@ $start.onclick = async () => {
 		//console.log(mavenRepo)
 		//console.log(miraiVersion)
 
-		await fetch("https://mirai.doomteam.fun/version/" + overflowVersion + "/maven-metadata.xml")
+		await fetch("https://mirai.mcio.dev/version/" + overflowVersion + "/maven-metadata.xml")
 			.then(resp => {
 				if (resp.status == 200) {
 					return resp.text()
@@ -355,7 +355,7 @@ $start.onclick = async () => {
 					})
 				}
 				let arr = [], remotes = [
-					{ name: "content/overflow-core-all-" + overflowVersion + "-all.jar", url: "https://mirai.doomteam.fun/version/" + overflowVersion + "/overflow-core-all-" + overflowSnapshotVersion + "-all.jar" },
+					{ name: "content/overflow-core-all-" + overflowVersion + "-all.jar", url: "https://mirai.mcio.dev/version/" + overflowVersion + "/overflow-core-all-" + overflowSnapshotVersion + "-all.jar" },
 					{ name: "content/bcprov-jdk15on-1.64.jar", url: mavenRepo + "/org/bouncycastle/bcprov-jdk15on/1.64/bcprov-jdk15on-1.64.jar" },
 					{ name: "content/mirai-console-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console/" + miraiVersion + "/mirai-console-" + miraiVersion + "-all.jar" },
 					{ name: "content/mirai-console-terminal-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console-terminal/" + miraiVersion + "/mirai-console-terminal-" + miraiVersion + "-all.jar" }
