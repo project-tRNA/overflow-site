@@ -76,7 +76,7 @@
 								<section>
 									<span class="icon solid major far fa-tools"></span>
 									<h2>支持 mirai-core 吗</h2>
-									<p>是的，本项目支持 mirai-core 和 mirai-console 使用，只需要将 <code>mirai-core-jvm</code> 依赖替换为 <code>overflow-core</code> 即可，详见<a href="https://github.com/MrXiaoM/Overflow/blob/main/docs/dev/README.md" target="_blank">开发文档</a>。</p>
+									<p>是的，本项目支持 mirai-core 和 mirai-console 使用，只需要将 <code>mirai-core-jvm</code> 依赖替换为 <code>overflow-core</code> 即可，详见<a href="https://mirai.mrxiaom.top/docs/dev" target="_blank">开发文档</a>。</p>
 								</section>
 								<section>
 									<span class="icon solid major far fa-bug"></span>
@@ -95,41 +95,42 @@
 						<div class="inner">
 							<h1>快速开始</h1>
 							<p>在这里打包下载 Overflow + mirai-console 整合包，并进行部署。</p>
+							<p>如果需要自动更新功能，请使用 <a href="https://github.com/MrXiaoM/mirai-console-loader/releases/download/v2.1.2-patch1/with-overflow.zip" target="_blank">MCL-patch1-with-overflow</a>。</p>
 							<div class="split style1 bottom-07em">
 								<section>
-										<h2>Step 1. 下载</h2>
-										<div class="fields">
-											<div class="field half">
-												<label for="repo">下载源</label>
-												<select id="$repo" name="repo">
-													<option value="https://mirrors.huaweicloud.com/repository/maven">镜像 - 华为云</option>
-													<option value="https://maven.aliyun.com/repository/central">镜像 - 阿里云</option>
-													<option value="https://repo1.maven.org/maven2">官方 - Maven Central</option>
-												</select>
-											</div>
-											<div class="field half">
-												<label for="mirai">mirai 版本</label>
-												<select id="$mirai" name="mirai">
-													<option>2.16.0</option>
-												</select>
-											</div>
-											<div class="field">
-												<div class="row bottom-07em">
-													<label for="overflow" class="flex-bottom right-auto">overflow 版本</label>
-													<button id="$refresh" class="button"><i class="fa fa-sync"></i> 刷新版本</button>
-												</div>
-												<select id="$overflow" name="overflow" disabled></select>
-											</div>
-											<div class="field">
-											<p>开发人员依赖: </p>
-											<code id="$codeDependencyGradle">top.mrxiaom:overflow-core-api:$VERSION</code>
-											</div>
+									<h2>Step 1. 下载</h2>
+									<div class="fields">
+										<div class="field half">
+											<label for="repo">下载源</label>
+											<select id="$repo" name="repo">
+												<option value="https://mirrors.huaweicloud.com/repository/maven">镜像 - 华为云</option>
+												<option value="https://maven.aliyun.com/repository/central">镜像 - 阿里云</option>
+												<option value="https://repo1.maven.org/maven2">官方 - Maven Central</option>
+											</select>
 										</div>
-										<ul class="actions">
-											<li><button id="$start" class="button" disabled><i class="fa fa-file-download"></i> 下载</button></li>
-											<li><a id="$checkOnGithub" class="button" href="https://github.com/MrXiaoM/Overflow" target="_blank"><i class="fa fa-code-branch"></i> 在 Github 查看</a></li>
-										</ul>
-										<p><b>不支持</b>大部分移动端浏览器，请使用桌面端 Chrome、Edge、FireFox 等浏览器下载。你也可以使用<a href="/docs/install/Raw" target="_blank">此方法</a>手动下载。</p>
+										<div class="field half">
+											<label for="mirai">mirai 版本</label>
+											<select id="$mirai" name="mirai">
+												<option>2.16.0</option>
+											</select>
+										</div>
+										<div class="field">
+											<div class="row bottom-07em">
+												<label for="overflow" class="flex-bottom right-auto">overflow 版本</label>
+												<button id="$refresh" class="button"><i class="fa fa-sync"></i> 刷新版本</button>
+											</div>
+											<select id="$overflow" name="overflow" disabled></select>
+										</div>
+										<div class="field">
+										<p>开发人员依赖: </p>
+										<code id="$codeDependencyGradle">top.mrxiaom:overflow-core-api:$VERSION</code>
+										</div>
+									</div>
+									<ul class="actions">
+										<li><button id="$start" class="button" disabled><i class="fa fa-file-download"></i> 下载</button></li>
+										<li><a id="$checkOnGithub" class="button" href="https://github.com/MrXiaoM/Overflow" target="_blank"><i class="fa fa-code-branch"></i> 在 Github 查看</a></li>
+									</ul>
+									<p><b>不支持</b>大部分移动端浏览器，请使用桌面端 Chrome、Edge、FireFox 等浏览器下载。你也可以使用<a href="/docs/install/Raw" target="_blank">此方法</a>手动下载。</p>
 								</section>
 								<section>
 									<h2>Step 2. 部署</h2>
