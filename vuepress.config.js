@@ -47,6 +47,7 @@ export default defineUserConfig({
         pageInfo: false,
         nextLink: true,
         prevLink: true,
+        darkmode: "toggle",
     }),
     plugins: [
     ],
