@@ -202,70 +202,105 @@ $refresh.onclick = async () => {
 	$start.setAttribute("disabled", undefined)
 	$overflow.setAttribute("disabled", undefined)
 	var miraiVersion = $mirai.options[$mirai.selectedIndex].value
-	var versionList = []
-	var githubCommits = []
-	await fetch("https://mirai.mcio.dev/overflow/versions", {cache: "no-store"})
-		.then(resp => {
-			if (resp.status == 200) {
-				return resp.text()
-			}
-			return null
-		}).then(text => {
-			var xmlDoc = new DOMParser().parseFromString(text, "text/xml")
-			var versions = xmlDoc.getElementsByTagName("version")
-
-			for (var i = 0; i < versions.length; i++) {
-				var item = versions.item(i);
-				versionList.push(item.textContent)
-			}
-		});
-	let getVersionByHash = function(hash) {
-		for (i in versionList) {
-			var version = versionList[i];
-			if (version.indexOf("-" + hash + "-SNAPSHOT") > 0) return version;
-		}
-		return undefined;
-	}
-	await fetch("https://api.github.com/repos/MrXiaoM/Overflow/commits", {cache: "no-store"})
-		.then(resp => {
-			if (resp.status == 200) {
-				return resp.json()
-			}
-			return null
-		}).then(json => {
-			for (var i = 0; i < json.length; i++) {
-				var obj = json[i]
-				var sha = obj.sha
-				var message = obj.commit.message
-				var time = new Date(obj.commit.committer.date)
-
-				var shortHash = sha.substring(0, 7)
-				var version = getVersionByHash(shortHash);
-				if (version !== undefined) {
-					githubCommits.push({ version: version, sha: sha, shortHash: shortHash, message: message, time: time })
+	var isSnapshot = $("#overflow-snapshot")[0].checked
+	if (isSnapshot) {
+		var versionList = []
+		var githubCommits = []
+		await fetch("https://mirai.mcio.dev/overflow/versions", {cache: "no-store"})
+			.then(resp => {
+				if (resp.status == 200) {
+					return resp.text()
 				}
+				return null
+			}).then(text => {
+				var xmlDoc = new DOMParser().parseFromString(text, "text/xml")
+				var versions = xmlDoc.getElementsByTagName("version")
+
+				for (var i = 0; i < versions.length; i++) {
+					var item = versions.item(i).textContent;
+					if (versionList.indexOf(item) < 0) {
+						versionList.push(item)
+					}
+				}
+			});
+		let getVersionByHash = function(hash) {
+			for (i in versionList) {
+				var version = versionList[i];
+				if (version.indexOf("-" + hash + "-SNAPSHOT") > 0) return version;
 			}
-		});
-	const dateToString = function (date) {
-		var month = date.getMonth() + 1;
-		var day = date.getDate();
-		var hour = date.getHours();
-		var minute = date.getMinutes();
-		if (month < 10) month = "0" + month;
-		if (day < 10) day = "0" + day;
-		if (hour < 10) hour = "0" + hour;
-		if (minute < 10) minute = "0" + minute;
-		return month + "/" + day + " " + hour + ":" + minute;
-	}
-	$overflow.removeAttribute("disabled");
-	$overflow.innerHTML = "";
-	for (i = 0; i < githubCommits.length; i++) {
-		var commit = githubCommits[i];
-		var option = document.createElement("option");
-		option.value = commit.version;
-		option.name = commit.sha;
-		option.text = dateToString(commit.time) + " " + commit.shortHash + " - " + commit.message.split('\n')[0];
-		$overflow.add(option, null);
+			return undefined;
+		}
+		await fetch("https://api.github.com/repos/MrXiaoM/Overflow/commits", {cache: "no-store"})
+			.then(resp => {
+				if (resp.status == 200) {
+					return resp.json()
+				}
+				return null
+			}).then(json => {
+				for (var i = 0; i < json.length; i++) {
+					var obj = json[i]
+					var sha = obj.sha
+					var message = obj.commit.message
+					var time = new Date(obj.commit.committer.date)
+
+					var shortHash = sha.substring(0, 7)
+					var version = getVersionByHash(shortHash);
+					if (version !== undefined) {
+						githubCommits.push({ version: version, sha: sha, shortHash: shortHash, message: message, time: time })
+					}
+				}
+			});
+		const dateToString = function (date) {
+			var month = date.getMonth() + 1;
+			var day = date.getDate();
+			var hour = date.getHours();
+			var minute = date.getMinutes();
+			if (month < 10) month = "0" + month;
+			if (day < 10) day = "0" + day;
+			if (hour < 10) hour = "0" + hour;
+			if (minute < 10) minute = "0" + minute;
+			return month + "/" + day + " " + hour + ":" + minute;
+		}
+		$overflow.removeAttribute("disabled");
+		$overflow.innerHTML = "";
+		for (i = 0; i < githubCommits.length; i++) {
+			var commit = githubCommits[i];
+			var option = document.createElement("option");
+			option.value = commit.version;
+			option.name = commit.sha;
+			option.text = dateToString(commit.time) + " " + commit.shortHash + " - " + commit.message.split('\n')[0];
+			$overflow.add(option, null);
+		}
+	} else {
+		var mavenRepo = $repo.options[$repo.selectedIndex].value
+		var versionList = []
+		await fetch(mavenRepo + "/top/mrxiaom/mirai/overflow-core/maven-metadata.xml", {cache: "no-store"})
+			.then(resp => {
+				if (resp.status == 200) {
+					return resp.text()
+				}
+				return null
+			}).then(text => {
+				var xmlDoc = new DOMParser().parseFromString(text, "text/xml")
+				var versions = xmlDoc.getElementsByTagName("version")
+
+				for (var i = 0; i < versions.length; i++) {
+					var item = versions.item(i).textContent;
+					if (versionList.indexOf(item) < 0) {
+						versionList.push(item)
+					}
+				}
+			});
+		$overflow.removeAttribute("disabled");
+		$overflow.innerHTML = "";
+		for (i = 0; i < versionList.length; i++) {
+			var ver = versionList[i];
+			var option = document.createElement("option");
+			option.value = ver;
+			option.name = "release-" + ver;
+			option.text = ver;
+			$overflow.add(option, null);
+		}
 	}
 	$overflow.onchange();
 	$refresh.removeAttribute("disabled");
@@ -274,53 +309,62 @@ $refresh.onclick = async () => {
 $overflow.onchange = () => {
 	var hash = $overflow.options[$overflow.selectedIndex].name
 	var overflowVersion = $overflow.options[$overflow.selectedIndex].value
-	$checkOnGithub.href = "https://github.com/MrXiaoM/Overflow/commit/" + hash
-	$codeDependencyGradle.innerHTML = "top.mrxiaom.mirai:overflow-core-api:" + overflowVersion
+	if (hash.indexOf("release") == 0) {
+		$checkOnGithub.href = "https://github.com/MrXiaoM/Overflow/releases/v" + overflowVersion
+		$codeDependencyGradle.innerHTML = "top.mrxiaom.mirai:overflow-core-api:" + overflowVersion
+	} else {
+		$checkOnGithub.href = "https://github.com/MrXiaoM/Overflow/commit/" + hash
+		$codeDependencyGradle.innerHTML = "top.mrxiaom.mirai:overflow-core-api:" + overflowVersion
+	}
 }
 $start.onclick = async () => {
 	$refresh.setAttribute("disabled", undefined)
 	$start.setAttribute("disabled", undefined)
 	$overflow.setAttribute("disabled", undefined)
-	$start.innerHTML = "正在获取快照版本"
 	try {
 		var mavenRepo = $repo.options[$repo.selectedIndex].value // "https://mirrors.huaweicloud.com/repository/maven"
 		if (mavenRepo.endsWith("/")) mavenRepo = mavenRepo.substring(0, mavenRepo.length - 1)
+
 		var miraiVersion = $mirai.options[$mirai.selectedIndex].value
 		var overflowVersion = $overflow.options[$overflow.selectedIndex].value
-		var overflowSnapshotVersion = overflowVersion
+		var overflowCoreAll = "";
+		if (overflowVersion.indexOf("-SNAPSHOT") > 0) {
+			$start.innerHTML = "正在获取快照版本"
+			var overflowSnapshotVersion = overflowVersion
 
-		//console.log(mavenRepo)
-		//console.log(miraiVersion)
-
-		await fetch("https://mirai.mcio.dev/overflow/version/" + overflowVersion + "/maven-metadata.xml")
-			.then(resp => {
-				if (resp.status == 200) {
-					return resp.text()
-				}
-				return null
-			}).then(text => {
-				var xmlDoc = new DOMParser().parseFromString(text, "text/xml")
-				var versions = xmlDoc.getElementsByTagName("snapshotVersion")
-
-				for (var i = 0; i < versions.length; i++) {
-					var item = versions.item(i);
-					var extension = getElementValueOr(item, "extension", "")
-					var classifier = getElementValueOr(item, "classifier", "")
-					var value = getElementValueOr(item, "value", "")
-					if (extension == 'jar' && classifier == "all") {
-						overflowSnapshotVersion = value
-						break
+			await fetch("https://mirai.mcio.dev/overflow/version/" + overflowVersion + "/maven-metadata.xml")
+				.then(resp => {
+					if (resp.status == 200) {
+						return resp.text()
 					}
-				}
-			})
+					return null
+				}).then(text => {
+					var xmlDoc = new DOMParser().parseFromString(text, "text/xml")
+					var versions = xmlDoc.getElementsByTagName("snapshotVersion")
 
-		if (overflowVersion == overflowSnapshotVersion) {
-			window.alert("无法获取Overflow快照版本号")
-			$start.removeAttribute("disabled")
-			$refresh.removeAttribute("disabled")
-			$overflow.removeAttribute("disabled")
-			$start.innerHTML = "下载"
-			return
+					for (var i = 0; i < versions.length; i++) {
+						var item = versions.item(i);
+						var extension = getElementValueOr(item, "extension", "")
+						var classifier = getElementValueOr(item, "classifier", "")
+						var value = getElementValueOr(item, "value", "")
+						if (extension == 'jar' && classifier == "all") {
+							overflowSnapshotVersion = value
+							break
+						}
+					}
+				})
+
+			if (overflowVersion == overflowSnapshotVersion) {
+				window.alert("无法获取Overflow快照版本号")
+				$start.removeAttribute("disabled")
+				$refresh.removeAttribute("disabled")
+				$overflow.removeAttribute("disabled")
+				$start.innerHTML = "下载"
+				return
+			}
+			overflowCoreAll = "https://mirai.mcio.dev/overflow/version/" + overflowVersion + "/overflow-core-all-" + overflowSnapshotVersion + "-all.jar";
+		} else {
+			overflowCoreAll = mavenRepo + "/top/mrxiaom/mirai/overflow-core-all/" + overflowVersion + "/overflow-core-all-" + overflowVersion + "-all.jar";
 		}
 		$start.innerHTML = "正在下载"
 
@@ -358,7 +402,7 @@ $start.onclick = async () => {
 					})
 				}
 				let arr = [], remotes = [
-					{ name: "content/overflow-core-all-" + overflowVersion + "-all.jar", url: "https://mirai.mcio.dev/overflow/version/" + overflowVersion + "/overflow-core-all-" + overflowSnapshotVersion + "-all.jar" },
+					{ name: "content/overflow-core-all-" + overflowVersion + "-all.jar", url: overflowCoreAll },
 					{ name: "content/bcprov-jdk15on-1.64.jar", url: mavenRepo + "/org/bouncycastle/bcprov-jdk15on/1.64/bcprov-jdk15on-1.64.jar" },
 					{ name: "content/mirai-console-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console/" + miraiVersion + "/mirai-console-" + miraiVersion + "-all.jar" },
 					{ name: "content/mirai-console-terminal-" + miraiVersion + "-all.jar", url: mavenRepo + "/net/mamoe/mirai-console-terminal/" + miraiVersion + "/mirai-console-terminal-" + miraiVersion + "-all.jar" }

@@ -114,14 +114,19 @@
 										</div>
 										<div class="field">
 											<div class="row bottom-07em">
-												<label for="overflow" class="flex-bottom right-auto">overflow 版本</label>
+												<label for="overflow" class="flex-bottom">overflow 版本</label>
+												<div class="flex-bottom right-auto">
+												<input type="checkbox" id="overflow-snapshot" name="overflow-snapshot">
+												<label for="overflow-snapshot" class="flex-bottom">开发版本</label>
+											</div>
 												<button id="$refresh" class="button"><i class="fa fa-sync"></i> 刷新版本</button>
 											</div>
 											<select id="$overflow" name="overflow" disabled></select>
 										</div>
 										<div class="field">
-										<p>开发人员依赖: </p>
-										<code id="$codeDependencyGradle">top.mrxiaom.mirai:overflow-core-api:$VERSION</code>
+											<p>*开发版本仅保留30天</p>
+											<p>开发人员依赖: </p>
+											<code id="$codeDependencyGradle">top.mrxiaom.mirai:overflow-core-api:$VERSION</code>
 										</div>
 									</div>
 									<ul class="actions">
