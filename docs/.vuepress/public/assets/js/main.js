@@ -274,7 +274,7 @@ $refresh.onclick = async () => {
 	} else {
 		var mavenRepo = $repo.options[$repo.selectedIndex].value
 		var versionList = []
-		await fetch(mavenRepo + "/top/mrxiaom/mirai/overflow-core/maven-metadata.xml", {cache: "no-store"})
+		await fetch("https://mirai.mcio.dev/overflow/releases", {cache: "no-store"})
 			.then(resp => {
 				if (resp.status == 200) {
 					return resp.text()
@@ -291,6 +291,7 @@ $refresh.onclick = async () => {
 					}
 				}
 			});
+		versionList.sort((a, b) => b.localeCompare(a));
 		$overflow.removeAttribute("disabled");
 		$overflow.innerHTML = "";
 		for (i = 0; i < versionList.length; i++) {
