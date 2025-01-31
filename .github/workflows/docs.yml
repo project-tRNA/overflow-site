@@ -53,9 +53,9 @@ jobs:
         run: cp -f ./docs/.vuepress/public/index.html ./docs/.vuepress/dist
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: 'docs/.vuepress/dist'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
