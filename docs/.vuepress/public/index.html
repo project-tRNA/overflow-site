@@ -81,7 +81,7 @@
 								<section>
 									<span class="icon solid major far fa-bug"></span>
 									<h2>它稳定吗</h2>
-									<p>目前 Overflow 暂未正式发布，内部还有非常多 TODO 未完成，稳定性暂不确定，欢迎长期测试，你的反馈将帮助 Overflow 变得更好。</p>
+									<p>目前 Overflow 已正式发布，相对比较稳定，有部分 mirai 的 api 暂未实现。欢迎长期测试，你的反馈将帮助 Overflow 变得更好。</p>
 								</section>
 							</div>
 							<ul class="actions">
@@ -144,12 +144,13 @@
 										<li><a href="https://wiki.mrxiaom.top/overflow/gensokyo" target="_blank">Gensokyo</a> <code>QQ 官方机器人</code></li>
 										<li><a href="https://wiki.mrxiaom.top/overflow/llonebot" target="_blank">LLOnebot</a> <code>QQNT 客户端插件</code></li>
 										<li><a href="https://napneko.github.io/zh-CN/guide/getting-started" target="_blank">NapCatQQ</a> <code>无头 QQNT 客户端</code></li>
+										<li><a href="https://github.com/ProtocolScience/AstralGocq" target="_blank">AstralGocq</a> <code>go-cqhttp QQNT 协议</code></li>
 									</ul>
-									<p>部署难度: <br/><code>Gensokyo > LLOnebot ~ NapCatQQ</code>
-									<p>Onebot 实现部署完成后，取得其 <b>主动 WebSocket 地址</b> 或 <b>被动 WebSocket 地址</b>，任选其一填入配置文件中，<b>再次启动</b>即可。</p>
+									<p>部署难度: <br/><code>Gensokyo > LLOnebot ~ NapCatQQ > AstralGocq</code>
+									<p>Onebot 实现部署完成后，取得其 <b>正向 WebSocket 地址</b> 或 <b>反向 WebSocket 地址</b>，任选其一填入配置文件中，<b>再次启动</b>即可。</p>
 									<ul>
-										<li><code>ws_host</code> 主动 WebSocket 地址。</li>
-										<li><code>reversed_ws_port</code> 被动 WebSocket 端口。</li>
+										<li><code>ws_host</code> 正向 WebSocket 地址。</li>
+										<li><code>reversed_ws_port</code> 反向 WebSocket 端口。</li>
 										<li><code>token</code> 鉴权令牌，留空即不验证令牌。</li>
 									</ul>
 								</section>
