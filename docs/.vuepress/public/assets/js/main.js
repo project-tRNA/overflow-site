@@ -203,113 +203,133 @@ $refresh.onclick = async () => {
 	$overflow.setAttribute("disabled", undefined)
 	var miraiVersion = $mirai.options[$mirai.selectedIndex].value
 	var isSnapshot = $("#overflow-snapshot")[0].checked
-	if (isSnapshot) {
-		var versionList = []
-		var githubCommits = []
-		await fetch("https://mirai.mcio.dev/overflow/versions", {cache: "no-store"})
-			.then(resp => {
-				if (resp.status == 200) {
-					return resp.text()
-				}
-				return null
-			}).then(text => {
-				var xmlDoc = new DOMParser().parseFromString(text, "text/xml")
-				var versions = xmlDoc.getElementsByTagName("version")
-
-				for (var i = 0; i < versions.length; i++) {
-					var item = versions.item(i).textContent;
-					if (item.replace("-SNAPSHOT", "").indexOf("-") == -1) continue;
-					if (versionList.indexOf(item) < 0) {
-						versionList.push(item)
-					}
-				}
-			});
-		let getVersionByHash = function(hash) {
-			for (i in versionList) {
-				var version = versionList[i];
-				if (version.indexOf("-" + hash + "-SNAPSHOT") > 0) return version;
-			}
-			return undefined;
+	try {
+		if (isSnapshot) {
+			await refreshSnapshots();
+		} else {
+			await refreshReleases();
 		}
-		await fetch("https://api.github.com/repos/MrXiaoM/Overflow/commits", {cache: "no-store"})
-			.then(resp => {
-				if (resp.status == 200) {
-					return resp.json()
-				}
-				return null
-			}).then(json => {
-				for (var i = 0; i < json.length; i++) {
-					var obj = json[i]
-					var sha = obj.sha
-					var message = obj.commit.message
-					var time = new Date(obj.commit.committer.date)
-
-					var shortHash = sha.substring(0, 7)
-					var version = getVersionByHash(shortHash);
-					if (version !== undefined) {
-						githubCommits.push({ version: version, sha: sha, shortHash: shortHash, message: message, time: time })
-					}
-				}
-			});
-		const dateToString = function (date) {
-			var month = date.getMonth() + 1;
-			var day = date.getDate();
-			var hour = date.getHours();
-			var minute = date.getMinutes();
-			if (month < 10) month = "0" + month;
-			if (day < 10) day = "0" + day;
-			if (hour < 10) hour = "0" + hour;
-			if (minute < 10) minute = "0" + minute;
-			return month + "/" + day + " " + hour + ":" + minute;
-		}
-		$overflow.removeAttribute("disabled");
-		$overflow.innerHTML = "";
-		for (i = 0; i < githubCommits.length; i++) {
-			var commit = githubCommits[i];
-			var option = document.createElement("option");
-			option.value = commit.version;
-			option.name = commit.sha;
-			option.text = dateToString(commit.time) + " " + commit.shortHash + " - " + commit.message.split('\n')[0];
-			$overflow.add(option, null);
-		}
-	} else {
-		var mavenRepo = $repo.options[$repo.selectedIndex].value
-		var versionList = []
-		await fetch("https://mirai.mcio.dev/overflow/releases", {cache: "no-store"})
-			.then(resp => {
-				if (resp.status == 200) {
-					return resp.text()
-				}
-				return null
-			}).then(text => {
-				var xmlDoc = new DOMParser().parseFromString(text, "text/xml")
-				var versions = xmlDoc.getElementsByTagName("version")
-
-				for (var i = 0; i < versions.length; i++) {
-					var item = versions.item(i).textContent;
-					if (versionList.indexOf(item) < 0) {
-						versionList.push(item)
-					}
-				}
-			});
-		versionList.sort((a, b) => b.localeCompare(a));
-		$overflow.removeAttribute("disabled");
-		$overflow.innerHTML = "";
-		for (i = 0; i < versionList.length; i++) {
-			var ver = versionList[i];
-			var option = document.createElement("option");
-			option.value = ver;
-			option.name = "release-" + ver;
-			option.text = ver;
-			$overflow.add(option, null);
-		}
+	} catch (e) {
+		console.log(e);
+		window.alert("刷新失败: " + e);
 	}
 	$overflow.onchange();
 	$refresh.removeAttribute("disabled");
 	$start.removeAttribute("disabled");
 }
+async function refreshSnapshots() {
+	var versionList = []
+	var githubCommits = []
+	await fetch("https://mirai.mcio.dev/overflow/versions", {cache: "no-store"})
+		.then(resp => {
+			if (resp.status == 200) {
+				return resp.text()
+			}
+			return null
+		}).then(text => {
+			var xmlDoc = new DOMParser().parseFromString(text, "text/xml")
+			var versions = xmlDoc.getElementsByTagName("version")
+
+			for (var i = 0; i < versions.length; i++) {
+				var item = versions.item(i).textContent;
+				if (item.replace("-SNAPSHOT", "").indexOf("-") == -1) continue;
+				if (versionList.indexOf(item) < 0) {
+					versionList.push(item)
+				}
+			}
+		}).catch(e => {
+			throw e
+		});
+	let getVersionByHash = function(hash) {
+		for (i in versionList) {
+			var version = versionList[i];
+			if (version.indexOf("-" + hash + "-SNAPSHOT") > 0) return version;
+		}
+		return undefined;
+	}
+	await fetch("https://api.github.com/repos/MrXiaoM/Overflow/commits", {cache: "no-store"})
+		.then(resp => {
+			if (resp.status == 200) {
+				return resp.json()
+			}
+			return null
+		}).then(json => {
+			for (var i = 0; i < json.length; i++) {
+				var obj = json[i]
+				var sha = obj.sha
+				var message = obj.commit.message
+				var time = new Date(obj.commit.committer.date)
+
+				var shortHash = sha.substring(0, 7)
+				var version = getVersionByHash(shortHash);
+				if (version !== undefined) {
+					githubCommits.push({ version: version, sha: sha, shortHash: shortHash, message: message, time: time })
+				}
+			}
+		}).catch(e => {
+			throw e
+		});
+	const dateToString = function (date) {
+		var month = date.getMonth() + 1;
+		var day = date.getDate();
+		var hour = date.getHours();
+		var minute = date.getMinutes();
+		if (month < 10) month = "0" + month;
+		if (day < 10) day = "0" + day;
+		if (hour < 10) hour = "0" + hour;
+		if (minute < 10) minute = "0" + minute;
+		return month + "/" + day + " " + hour + ":" + minute;
+	}
+	$overflow.removeAttribute("disabled");
+	$overflow.innerHTML = "";
+	for (i = 0; i < githubCommits.length; i++) {
+		var commit = githubCommits[i];
+		var option = document.createElement("option");
+		option.value = commit.version;
+		option.name = commit.sha;
+		option.text = dateToString(commit.time) + " " + commit.shortHash + " - " + commit.message.split('\n')[0];
+		$overflow.add(option, null);
+	}
+}
+async function refreshReleases() {
+	var mavenRepo = $repo.options[$repo.selectedIndex].value
+	var versionList = []
+	await fetch("https://mirai.mcio.dev/overflow/releases", {cache: "no-store"})
+		.then(resp => {
+			if (resp.status == 200) {
+				return resp.text()
+			}
+			return null
+		}).then(text => {
+			var xmlDoc = new DOMParser().parseFromString(text, "text/xml")
+			var versions = xmlDoc.getElementsByTagName("version")
+
+			for (var i = 0; i < versions.length; i++) {
+				var item = versions.item(i).textContent;
+				if (versionList.indexOf(item) < 0) {
+					versionList.push(item)
+				}
+			}
+		}).catch(e => {
+			throw e
+		});
+	versionList.sort((a, b) => b.localeCompare(a));
+	$overflow.removeAttribute("disabled");
+	$overflow.innerHTML = "";
+	for (i = 0; i < versionList.length; i++) {
+		var ver = versionList[i];
+		var option = document.createElement("option");
+		option.value = ver;
+		option.name = "release-" + ver;
+		option.text = ver;
+		$overflow.add(option, null);
+	}
+}
+
 $overflow.onchange = () => {
-	var hash = $overflow.options[$overflow.selectedIndex].name
+	var selected = $overflow.options[$overflow.selectedIndex]
+	if (selected == null) return;
+	var hash = selected.name
 	var overflowVersion = $overflow.options[$overflow.selectedIndex].value
 	if (hash.indexOf("release") == 0) {
 		$checkOnGithub.href = "https://github.com/MrXiaoM/Overflow/releases/v" + overflowVersion
@@ -472,6 +492,7 @@ $start.onclick = async () => {
 		pump()
 	} catch (e) {
 		console.log(e)
+		window.alert("下载失败: " + e)
 		$start.removeAttribute("disabled")
 		$refresh.removeAttribute("disabled")
 		$overflow.removeAttribute("disabled")
