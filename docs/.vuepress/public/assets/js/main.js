@@ -218,6 +218,7 @@ $refresh.onclick = async () => {
 
 				for (var i = 0; i < versions.length; i++) {
 					var item = versions.item(i).textContent;
+					if (item.replace("-SNAPSHOT", "").indexOf("-") == -1) continue;
 					if (versionList.indexOf(item) < 0) {
 						versionList.push(item)
 					}
