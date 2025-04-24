@@ -247,7 +247,7 @@ async function refreshSnapshots() {
 		}
 		return undefined;
 	}
-	await fetch("https://api.github.com/repos/MrXiaoM/Overflow/commits", {cache: "no-store"})
+	await fetch("https://mirai.mcio.dev/overflow/commits", {cache: "no-store"})
 		.then(resp => {
 			if (resp.status == 200) {
 				return resp.json()
